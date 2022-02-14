@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+        <title>Interstellar presentation</title>
+
+        <link rel="stylesheet" href="style.css">
+
+        <script type="module" src="index.js"></script>
+        <script src="scrolling.js"></script>
+    </head>
+
+    <body>
+        <section>
+            <h1>General Relativity</h1>
+            <ul>
+                <li>Principle of Equivalence: gravity is same as acceleration</li>
+                <li>Mass causes spacetime to curve</li>
+            </ul>
+        </section>
+        <section>
+            <h1>General Relativistic Time Dilation</h1>
+            <ul>
+                <li>Curved spacetime means more "distance" between same points.</li>
+                <li>More "distance" means more percieved time. <strong>A gravity-well'd clock runs slower.</strong></li>
+                <li>In Interstellar: addressed as "When I'm [...] traveling near the speed of light, or near a black hole,
+                    time's gonna change for me. It's gonna run more slowly</li>
+            </ul>
+        </section>
+        <section>
+            <h1>Effect of Special Relativity in <cite>Interstellar</cite></h1>
+            <ul>
+                <li>"Two years to Saturn" (8mo to Mars; gravity slingshot; 14mo Mars-Saturn)
+                    <ul>
+                        <li>365 * 24 * 60 * 60 * 2 = 63072000s</li>
+                    </ul>
+                </li>
+                <li>Average distance of Saturn from Earth: 1,450,000,000,000m (1.45 trillion meters)</li>
+                <li>distance / time = average speed of 22989.599 m/s: 0.00007663c</li>
+                <li>&gamma; = 1.0000000029360785</li>
+                <li>The time difference is like ~200ms</li>
+            </ul>
+            <sim-world>
+                this.addDot([
+                        t=>0,
+                        t=>0,
+                        t=>0
+                    ],0xDFC958, 2);
+
+                this.addDot([
+                    t=>Math.cos(t/1000) * 5,
+                    t=>0,
+                    t=>Math.sin(t/1000) * 5
+                ],0x9CDF58, 0.25);
+                this.addDot([
+                    t=>Math.cos(t/1820) * 6,
+                    t=>0,
+                    t=>Math.sin(t/1820) * 6
+                ],0xDF6A58, 0.25);
+                this.addDot([
+                    t=>Math.cos(t/5000) * 10,
+                    t=>0,
+                    t=>Math.sin(t/5000) * 10
+                ],0xDBA159, 1);
+            </sim-world>
+        </section>
+        <section>
+            <h1>Gravitational Lensing</h1>
+            <ul>
+                <li>Immense gravity bends light</li>
+                <li>"Light Disk" around black hole is actually the accretion disk from the reverse side</li>
+                <li>Light bends around the black hole</li>
+            </ul>
+        </section>
+        <section>
+            <h1>Branes</h1>
+            <ul>
+                <li>If space is curved by gravity, <em>how</em> is it curved? Which way?</li>
+                <li>Must be more dimensions than 3+1</li>
+                <li>Branes are like geometric points, but they can have more dimensions!</li>
+                <li>Our universe is just all the branes <em>nearby</em> in dimension 5 <small>or more</small></li>
+            </ul>
+            <sim-world>
+                let c = 0xFF6978;
+                let x = Math.random()*10 - 5;
+                let y = Math.random()*10 - 5;
+                let zO = Math.random();
+
+                this.addDot([
+                    t=>Math.cos(Date.now()/1000) * 5,
+                    t=>0,
+                    t=>Math.sin(Date.now()/1000) * 5
+                ],c,0.25,true);
+            </sim-world>
+        </section>
+        <section>
+            <h1>Branes</h1>
+            <ul>
+                <li>If space is curved by gravity, <em>how</em> is it curved? Which way?</li>
+                <li>Must be more dimensions than 3+1</li>
+                <li>Branes are like geometric points, but they can have more dimensions!</li>
+                <li>Our universe is just all the branes <em>nearby</em> in dimension 5 <small>or more</small></li>
+            </ul>
+            <sim-world distort>
+                let c = 0xFF6978;
+                let x = Math.random()*10 - 5;
+                let y = Math.random()*10 - 5;
+                let zO = Math.random();
+
+                this.addDot([
+                    t=>Math.cos(Date.now()/1000) * 5,
+                    t=>0,
+                    t=>Math.sin(Date.now()/1000) * 5
+                ],c,0.25,true);
+            </sim-world>
+        </section>
+        <section>
+            <h1>The Bulk</h1>
+            <ul>
+                <li>A dimension is either "compact" or "extensive". "compact" means that points are only in a finite range
+                    on that dimension.</li>
+                <li>If a brane's extra dimensions <em>aren't</em> compact, we have something called The Bulk.</li>
+                <li>The Bulk is the broader space: the multiverse (but in math)!</li>
+            </ul>
+            <sim-world distort>
+                for(let i = 0; i < 20; i++) {
+                    let c = [0xB1EDE8,0x643A71,0xFF6978][i%3]
+                    let x = Math.random()*10 - 5;
+                    let y = Math.random()*10 - 5;
+                    let zO = Math.random();
+
+                    this.addDot([
+                        t=>x - 500/t,
+                        t=>Math.cos(t/1000 + zO)*5,
+                        t=>y - 500/t
+                    ],c,0.25);
+                }
+            </sim-world>
+        </section>
+        <section>
+            <h1>The Bulk</h1>
+            <ul>
+                <li>A dimension is either "compact" or "extensive". "compact" means that points are only in a finite range
+                    on that dimension.</li>
+                <li>If a brane's extra dimensions <em>aren't</em> compact, we have something called The Bulk.</li>
+                <li>The Bulk is the broader space: the multiverse (but in math)!</li>
+            </ul>
+            <sim-world distort>
+                for(let i = 0; i < 20; i++) {
+                    let c = [0xB1EDE8,0x643A71,0xFF6978][i%3];
+                    let x = Math.random() * 10 - 5;
+                    let y = Math.random() * 10 - 5;
+                    switch(i%4) {
+                        case 3: this.addDot([
+                            t=>x+500/t,
+                            t=>1000/t,
+                            t=>y+500/t
+                        ],c);
+                        break;
+                        case 2: this.addDot([
+                            t=>x+500/t,
+                            t=>-1000/t,
+                            t=>y+500/t
+                        ],c);
+                        break;
+                        case 1: this.addDot([
+                            t=>x+500/t,
+                            t=>1000/t,
+                            t=>y+500/t
+                        ],c);
+                        break;
+                        case 0:
+                        this.addDot([
+                            t=>x+500/t,
+                            t=>-1000/t,
+                            t=>y+500/t
+                        ],c)
+                    }
+                }
+            </sim-world>
+        </section>
+        <section>
+            <h1>Usage in Interstellar</h1>
+            <ul>
+                <li>The Endurance passes through the Bulk in the wormhole</li>
+                <li>Interstellar assumes an "extensive" model</li>
+            </ul>
+            <h2>Accuracy</h2>
+            <ul>
+                <li>We don't know: this is <em>very</em> theoretical</li>
+                <li>The bookcase's 5-dimensionality is unlikely.</li>
+                <li>When the Endurance enters the wormhole, the appearance is very accurate. The oddest part is that it
+                    takes them time to go through</li>
+                <li>The blue whirlwind Cooper sees at the end is not unlikely! Blueshifted sunlight is a good explaination.
+                </li>
+            </ul>
+        </section>
+    </body>
+
+</html>
