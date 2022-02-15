@@ -51,7 +51,7 @@ SimulatedWorldElement.prototype.connectedCallback = function () {
 
     this.scene = new THREE.Scene();
 
-    const geometry = makeCoolerPlaneGeo(100, 100, 100, 100);
+    const geometry = makeCoolerPlaneGeo(100, 100, 200, 200);
 
     const material = new THREE.ShaderMaterial(gridShader);
 
@@ -158,13 +158,15 @@ function addDotLabel(dot, labels, worldElem) {
 
     var labelValues = labels.map(x=>makeAxisLabel(x, labelElem));
     
-    cbWhenVisible(worldElem, function(t) {
+    cbWhenVisible(worldElem, function(simWorld, t) {
         var screenPos = toScreenXY(dot.sphere.position, worldElem.camera, pBox);
         labelElem.style.transform = `translate(${screenPos.x}px, ${screenPos.y}px)`;
 
-        labelValues[0].textContent = r5(dot.sphere.position.x);
-        labelValues[1].textContent = r5(dot.sphere.position.y);
-        labelValues[2].textContent = r5(dot.sphere.position.z);
+        if(labelValues[0]) labelValues[0].textContent = r5(dot.sphere.position.x);
+        if(labelValues[1]) labelValues[1].textContent = r5(dot.sphere.position.y);
+        if(labelValues[2]) labelValues[2].textContent = r5(dot.sphere.position.z);
+
+        if(labelValues.length > 3) labelValues[labelValues.length - 1].textContent = Math.round(t/1000);
     });
 
     worldElem.appendChild(labelElem);
@@ -211,8 +213,12 @@ function distort(planeGeo,simWorld, t) {
 
     var pts = planeGeo.attributes.position.array;
 
+    var d3 = simWorld.getAttribute("distort") == "3";
+
     for (var i = 1; i < pts.length; i+= 3) {
         var dis = distance2(pts[i - 1], pts[i], dotPos[0], -dotPos[2]);
+        if(d3) dis = Math.sqrt(dis * dis + dotPos[1] * dotPos[1]);
+
         pts[i + 1] = -dotWeight / (1 + dis);
     }
     d = true;

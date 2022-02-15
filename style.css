@@ -66,8 +66,8 @@ sim-world .point-label {
 
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
-    max-width: 25ch;
+    justify-content: center;
+    max-width: 24ch;
     flex-wrap: wrap;
 }
 

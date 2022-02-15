@@ -91,7 +91,7 @@
                     t=>Math.cos(Date.now()/1000) * 5,
                     t=>0,
                     t=>Math.sin(Date.now()/1000) * 5
-                ],c,0.25,["x","z","y"]);
+                ],c,0.25,["x","z","y","t"]);
             </sim-world>
         </section>
         <section>
@@ -115,7 +115,8 @@
                 ],c,0.25,["x","y","z",
                         "&alpha;","&beta;","&phi;",
                         "&Gamma;","&delta;","&zeta;",
-                        "&eta;", "&kappa;", "&mu;"]);
+                        "&eta;", "&kappa;", "&mu;",
+                                "t"]);
             </sim-world>
         </section>
         <section>
@@ -136,7 +137,7 @@
                     t=>Math.cos(Date.now()/1000) * 5,
                     t=>0,
                     t=>Math.sin(Date.now()/1000) * 5
-                ],c,0.25,["x","&alpha;","z"]);
+                ],c,0.25,["x","&alpha;","y"]);
             </sim-world>
         </section>
         <section>
@@ -201,6 +202,29 @@
                             t=>y+500/t
                         ],c)
                     }
+                }
+            </sim-world>
+        </section>
+        <section>
+            <h1>The Bulk</h1>
+            <ul>
+                <li>A dimension is either "compact" or "extensive". "compact" means that points are only in a finite range
+                    on that dimension.</li>
+                <li>If a brane's extra dimensions <em>aren't</em> compact, we have something called The Bulk.</li>
+                <li>The Bulk is the broader space: the multiverse (but in math)!</li>
+            </ul>
+            <sim-world distort="3">
+                for(let i = 0; i < 20; i++) {
+                    let c = [0xB1EDE8,0x643A71,0xFF6978][i%3]
+                    let x = Math.random()*10 - 5;
+                    let y = Math.random()*10 - 5;
+                    let zO = Math.random();
+
+                    this.addDot([
+                        t=>x - 500/t,
+                        t=>Math.cos(t/1000 + zO)*5,
+                        t=>y - 500/t
+                    ],c,0.25);
                 }
             </sim-world>
         </section>
