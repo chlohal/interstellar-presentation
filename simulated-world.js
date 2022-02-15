@@ -131,9 +131,10 @@ SimulatedWorldElement.prototype.addDot = function(pos, color, size, label) {
 
     dot.pos = pos;
     
-    dot.size = size || 0.25;
+    if(size === undefined) size = 0.25;
+    dot.size = size;
 
-    const geometry = new THREE.SphereGeometry(dot.size);
+    const geometry = new THREE.SphereGeometry(Math.max(0.125, size));
     const material = new THREE.MeshToonMaterial({ color: color || 0xFF6978 });
     dot.sphere = new THREE.Mesh( geometry, material );
 
