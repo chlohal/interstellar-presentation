@@ -12,6 +12,11 @@ SimulatedWorldElement.prototype = Object.create(HTMLElement.prototype);
 SimulatedWorldElement.prototype.constructor = SimulatedWorldElement;
 Object.setPrototypeOf(SimulatedWorldElement, HTMLElement);
 
+SimulatedWorldElement.prototype.averageDotWeight = function(t) {
+    let tW = this.dots.map(x=>x.size).reduce((a,b)=>a+b);
+    return tW / this.dots.length;
+}
+
 SimulatedWorldElement.prototype.averageDotPos = function(t) {
     
     let tW = this.dots.map(x=>x.size).reduce((a,b)=>a+b);
@@ -46,16 +51,21 @@ SimulatedWorldElement.prototype.connectedCallback = function () {
 
     this.scene = new THREE.Scene();
 
-    const geometry = new THREE.PlaneGeometry(100, 100, 10, 10);
+    const geometry = makeCoolerPlaneGeo(100, 100, 100, 100);
 
     const material = new THREE.ShaderMaterial(gridShader);
 
+
+    this.sun = new THREE.DirectionalLight(0xFFFFFF, 1);
+    this.sun.position.set(0, 10, 0);
+    this.sun.target.position.set(-5, 0, 0);
 
     const plane = new THREE.Mesh(geometry, material);
     plane.rotation.x = -Math.PI / 2;
     this.plane = plane;
 
     this.scene.add(plane);
+    this.scene.add(this.sun);
 
     this.renderer = new THREE.WebGLRenderer({ alpha: true });
     this.renderer.setSize(box.width, box.height);
@@ -78,10 +88,12 @@ function makeCoolerPlaneGeo(w, l, dw, dl) {
 
     for(var i = sW; i < eW; i += w/dw) {
         for(var j = sL; j < eL; j += l/dl) {
-            pts.push(i,j,0,
-                    i+w/dw, j, 0,
-                    i, j+l/dl, 0
-                    );
+            var p = [i,j,0];
+            var pPx  = [i+w/dw, j, 0];
+            var pPy = [i, j+l/dl, 0];
+            var pPxy = [i+w/dw, j+l/dl, 0];
+            pts.push(...p, ...pPx, ...pPy,
+                    ...pPxy, ...pPy, ...pPx);
         }
     }
 
@@ -122,7 +134,7 @@ SimulatedWorldElement.prototype.addDot = function(pos, color, size, label) {
     dot.size = size || 0.25;
 
     const geometry = new THREE.SphereGeometry(dot.size);
-    const material = new THREE.MeshBasicMaterial({ color: color || 0xFF6978 });
+    const material = new THREE.MeshToonMaterial({ color: color || 0xFF6978 });
     dot.sphere = new THREE.Mesh( geometry, material );
 
     dot.sphere.position.x = posNums[0];
@@ -131,23 +143,48 @@ SimulatedWorldElement.prototype.addDot = function(pos, color, size, label) {
 
     this.scene.add(dot.sphere);
     
-    if(label) addDotLabel(dot, this);
+    if(label) addDotLabel(dot, label, this);
 
     this.dots.push(dot);
 
     if(needsAnim) animDot(this, dot)
 }
 
-function addDotLabel(dot, worldElem) {
+function addDotLabel(dot, labels, worldElem) {
     var pBox = worldElem.getClientRects()[0];
     
-    var labelElem = document.createElement("div");
+    var labelElem = document.createElement("dl");
     labelElem.classList.add("point-label");
+
+    var labelValues = labels.map(x=>makeAxisLabel(x, labelElem));
     
     cbWhenVisible(worldElem, function(t) {
         var screenPos = toScreenXY(dot.sphere.position, worldElem.camera, pBox);
-        labelElem.style.transform = `translate(${screenPos.x}px, ${screenPos.y}px)`
+        labelElem.style.transform = `translate(${screenPos.x}px, ${screenPos.y}px)`;
+
+        labelValues[0].textContent = r5(dot.sphere.position.x);
+        labelValues[1].textContent = r5(dot.sphere.position.y);
+        labelValues[2].textContent = r5(dot.sphere.position.z);
     });
+
+    worldElem.appendChild(labelElem);
+}
+
+function r5(n) {
+    return Math.round(n * 100) / 100;
+}
+
+function makeAxisLabel(axisName, parent) {
+    var caption = document.createElement("dt");
+    caption.textContent = axisName + "=";
+
+    var value = document.createElement("dd");
+    value.textContent = "0";
+
+    parent.appendChild(caption);
+    parent.appendChild(value);
+
+    return value;
 }
 
 function toScreenXY( position, camera, box) {
@@ -157,8 +194,8 @@ function toScreenXY( position, camera, box) {
     projScreenMat.multiplyMatrices( camera.projectionMatrix, camera.matrixWorldInverse );
     pos.applyMatrix4(projScreenMat);
 
-    return { x: ( pos.x + 1 ) * box.width / 2 + box.x,
-         y: ( - pos.y + 1) * box.height / 2 + box.y };
+    return { x: ( pos.x + 1 ) * box.width / 2,
+         y: -( pos.y + 1) * box.height / 2 };
 
 }
 
@@ -166,20 +203,23 @@ function keepDistort(simWorld, planeGeo) {
     cbWhenVisible(simWorld, function(s, t) {
         distort(planeGeo, simWorld, t);
     });
-}
+}var d = false
 
 function distort(planeGeo,simWorld, t) {
     var dotPos = simWorld.averageDotPos(t);
+    var dotWeight = simWorld.averageDotWeight(t) * 100;
 
     var pts = planeGeo.attributes.position.array;
 
-    for (var i = 1; i < pts.length; i+= 2) {
-        var dis = distance2(pts[i - 1], pts[i + 1], -dotPos[0], dotPos[2]);
-        pts[i] = -10 / dis 
+    for (var i = 1; i < pts.length; i+= 3) {
+        var dis = distance2(pts[i - 1], pts[i], dotPos[0], -dotPos[2]);
+        pts[i + 1] = -dotWeight / (1 + dis);
     }
+    d = true;
 
     // tells Three.js to re-render this mesh
     planeGeo.attributes.position.needsUpdate = true;
+    planeGeo.computeVertexNormals();
 }
 
 function distance2(x1, y1, x2, y2) {

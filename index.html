@@ -91,7 +91,7 @@
                     t=>Math.cos(Date.now()/1000) * 5,
                     t=>0,
                     t=>Math.sin(Date.now()/1000) * 5
-                ],c,0.25,true);
+                ],c,0.25,["x","z","y"]);
             </sim-world>
         </section>
         <section>
@@ -112,7 +112,31 @@
                     t=>Math.cos(Date.now()/1000) * 5,
                     t=>0,
                     t=>Math.sin(Date.now()/1000) * 5
-                ],c,0.25,true);
+                ],c,0.25,["x","y","z",
+                        "&alpha;","&beta;","&phi;",
+                        "&Gamma;","&delta;","&zeta;",
+                        "&eta;", "&kappa;", "&mu;"]);
+            </sim-world>
+        </section>
+        <section>
+            <h1>Branes</h1>
+            <ul>
+                <li>If space is curved by gravity, <em>how</em> is it curved? Which way?</li>
+                <li>Must be more dimensions than 3+1</li>
+                <li>Branes are like geometric points, but they can have more dimensions!</li>
+                <li>Our universe is just all the branes <em>nearby</em> in dimension 5 <small>or more</small></li>
+            </ul>
+            <sim-world distort>
+                let c = 0xFF6978;
+                let x = Math.random()*10 - 5;
+                let y = Math.random()*10 - 5;
+                let zO = Math.random();
+
+                this.addDot([
+                    t=>Math.cos(Date.now()/1000) * 5,
+                    t=>0,
+                    t=>Math.sin(Date.now()/1000) * 5
+                ],c,0.25,["x","&alpha;","z"]);
             </sim-world>
         </section>
         <section>
